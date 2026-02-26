@@ -1,137 +1,174 @@
 ﻿// Simula's Soup
 
-// Create a program with an enumeration to recreate the locking mechanism
-// Open > *close* > Closed > *lock* > Locked
-// Locked > *unlock* > Closed > *open* > Open
-
 using System.Globalization;
 
-// Initialise
-ChestState currentState = ChestState.Locked;
+// Initialisation
+string userFlavourInput = "Invalid";
+bool validUserFlavourChoice = false;
+
+string userIngredientInput = "Invalid";
+bool validUserIngredientChoice = false;
+
+string userDishInput = "Invalid";
+bool validUserDishChoice = false;
+
+(string Flavour, string Ingredient, string Dish) mealTuple = ("","","");
+
 
 // User Introduction
-Console.WriteLine("Welcome dear traveller.  I see that you have discovered the Great Chest of Flange.");
-
-Console.WriteLine("The chest can be in any one of three states: ");
-
-Array stateOptions = Enum.GetValues(typeof(ChestState));
-foreach (ChestState state in stateOptions)
+Console.WriteLine("Welcome dear traveller.  You look hungry, allow me to cook for you.  ");
+Console.WriteLine();
+Console.WriteLine("Please choose a flavour for your meal, the options are: ");
+Console.ForegroundColor = ConsoleColor.Yellow;
+Array powders = Enum.GetValues(typeof(Powder));
+foreach (Powder powder in powders)
 {
-    Console.WriteLine(state);
+    Console.WriteLine(powder);
 }
 Console.WriteLine();
-
-
-Console.WriteLine("You have four possible actions at any given time: ");
-Array userOptions = Enum.GetValues(typeof(UserChoice));
-foreach (UserChoice choice in userOptions)
-{
-    Console.WriteLine(choice);
-}
-Console.WriteLine();
-Console.WriteLine();
-
 Console.ForegroundColor = ConsoleColor.Cyan;
 
 
-// Main game loop
-
-while (true)
+// Get Flavour choice
+while (!validUserFlavourChoice)
 {
-    Console.WriteLine($"The chest is currently {currentState}, what would you like to do to it?");
-    string userInput = Console.ReadLine() ?? ""; // Null-coalescing operator (??) is to provide a default value in case of null
-
+    Console.ForegroundColor = ConsoleColor.White;
+    Console.Write($"Flavour: ");
+    userFlavourInput = Console.ReadLine() ?? "";
+    Console.ForegroundColor = ConsoleColor.Cyan;
     // Convert input to Title case
     TextInfo myTI = new CultureInfo("en-US", false).TextInfo; // Creates a TextInfo based on the "en-US" culture.
-    string userAction = myTI.ToTitleCase(userInput);
+    string userFlavourChoice = myTI.ToTitleCase(userFlavourInput);
 
-    // Check if user input is an allowed value (present in UserChoice enum)
-    bool validUserChoice = Enum.IsDefined(typeof(UserChoice), userAction);
+    // Check if user input is an allowed value
+    validUserFlavourChoice = Enum.IsDefined(typeof(Powder), userFlavourChoice);
 
     // Handle invalid input
-    if (!validUserChoice)
+    if (!validUserFlavourChoice)
     {
-        Console.WriteLine($"Unfortunately, {userAction} is not a valid options - these are your choices: ");
-        foreach (UserChoice choice in userOptions)
+        Console.WriteLine($"Unfortunately, {userFlavourChoice} is not a valid option - these are your choices: ");
+        Console.ForegroundColor = ConsoleColor.Yellow;
+        foreach (Powder powder in powders)
         {
-            Console.WriteLine(choice);
+            Console.WriteLine(powder);
         }
         Console.WriteLine();
+        Console.WriteLine();
+        Console.ForegroundColor = ConsoleColor.Cyan;
     }
-
-
-    else if (currentState == ChestState.Locked)
-    {
-        if (userAction == "Unlock")
-        {
-            Console.Write($"The chest was in a {currentState} state, you wished to {userAction} it,  ");
-            currentState = ChestState.Closed;
-            Console.WriteLine($"it is now {currentState}.");
-        }
-        else
-        {
-            Console.Write($"The chest was {currentState} state, you wished to {userAction} it,  ");
-            Console.WriteLine($"it is still {currentState}!");
-        }
-
-    }
-    else if (currentState == ChestState.Closed)
-    {
-        if (userAction == "Lock")
-        {
-            Console.Write($"The chest was in a {currentState} state, you wished to {userAction} it,  ");
-            currentState = ChestState.Locked;
-            Console.WriteLine($"it is now {currentState}.");
-        }
-        else if (userAction == "Open")
-        {
-            Console.Write($"The chest was in a {currentState} state, you wished to {userAction} it,  ");
-            currentState = ChestState.Open;
-            Console.WriteLine($"it is now {currentState}!");
-        }
-        else
-        {
-            Console.Write($"The chest was {currentState} state, you wished to {userAction} it,  ");
-            Console.WriteLine($"it is still {currentState}!");
-        }
-
-    }
-    else if (currentState == ChestState.Open)
-    {
-        if (userAction == "Close")
-        {
-            Console.Write($"The chest was in a {currentState} state, you wished to {userAction} it,  ");
-            currentState = ChestState.Closed;
-            Console.WriteLine($"it is now {currentState}.");
-        }
-        else if (userAction == "Open")
-        {
-            Console.Write($"The chest was in a {currentState} state, you wished to {userAction} it,  ");
-            Console.WriteLine($"it is still {currentState}!");
-        }
-        else
-        {
-            Console.Write($"The chest was {currentState} state, you wished to {userAction} it,  ");
-            Console.WriteLine($"it is still {currentState}!");
-        }
-
-    }
-
+    mealTuple.Flavour = userFlavourChoice;
 
 }
 
-// Type Definitions
-enum UserChoice
+Console.WriteLine();
+Console.WriteLine("Please choose a main ingredient for your meal, the options are: ");
+Console.ForegroundColor = ConsoleColor.Yellow;
+Array ingredients = Enum.GetValues(typeof(MainIngredient));
+foreach (MainIngredient ingredient in ingredients)
 {
-    Open,
-    Close,
-    Unlock,
-    Lock
+    Console.WriteLine(ingredient);
+}
+Console.WriteLine();
+Console.ForegroundColor = ConsoleColor.Cyan;
+
+// Get Main ingredient choice
+while (!validUserIngredientChoice)
+{
+    Console.ForegroundColor = ConsoleColor.White;
+    Console.Write($"Main Ingredient: ");
+    userIngredientInput = Console.ReadLine() ?? "";
+    Console.ForegroundColor = ConsoleColor.Cyan;
+
+    // Convert input to Title case
+    TextInfo myTI = new CultureInfo("en-US", false).TextInfo; // Creates a TextInfo based on the "en-US" culture.
+    string userIngredientChoice = myTI.ToTitleCase(userIngredientInput);
+
+    // Check if user input is an allowed value
+    validUserIngredientChoice = Enum.IsDefined(typeof(MainIngredient), userIngredientChoice);
+
+    // Handle invalid input
+    if (!validUserIngredientChoice)
+    {
+        Console.WriteLine();
+        Console.WriteLine($"Unfortunately, {userIngredientChoice} is not a valid option - these are your choices: ");
+        Console.ForegroundColor = ConsoleColor.Yellow;
+        foreach (MainIngredient ingredient in ingredients)
+        {
+            Console.WriteLine(ingredient);
+        }
+        Console.WriteLine();
+        Console.ForegroundColor = ConsoleColor.Cyan;
+    }
+    mealTuple.Ingredient = userIngredientChoice;
+}
+
+Console.WriteLine();
+Console.WriteLine("Please choose a type of dish, the options are: ");
+Console.ForegroundColor = ConsoleColor.Yellow;
+Array dishes = Enum.GetValues(typeof(FoodType));
+foreach (FoodType dish in dishes)
+{
+    Console.WriteLine(dish);
+}
+Console.WriteLine();
+Console.ForegroundColor = ConsoleColor.Cyan;
+
+// Get dish choice
+while (!validUserDishChoice)
+{
+    Console.ForegroundColor = ConsoleColor.White;
+    Console.Write($"Dish: ");
+    userDishInput = Console.ReadLine() ?? "";
+    Console.ForegroundColor = ConsoleColor.Cyan;
+
+    // Convert input to Title case
+    TextInfo myTI = new CultureInfo("en-US", false).TextInfo; // Creates a TextInfo based on the "en-US" culture.
+    string userDishChoice = myTI.ToTitleCase(userDishInput);
+
+    // Check if user input is an allowed value
+    validUserDishChoice = Enum.IsDefined(typeof(FoodType), userDishChoice);
+
+    // Handle invalid input
+    if (!validUserDishChoice)
+    {
+        Console.WriteLine();
+        Console.WriteLine($"Unfortunately, {userDishChoice} is not a valid option - these are your choices: ");
+        Console.ForegroundColor = ConsoleColor.Yellow;
+        foreach (FoodType dish in dishes)
+        {
+            Console.WriteLine(dish);
+        }
+        Console.WriteLine();
+        Console.ForegroundColor = ConsoleColor.Cyan;
+    }
+    mealTuple.Dish = userDishChoice;
+}
+
+Console.WriteLine();
+Console.ForegroundColor = ConsoleColor.Cyan;
+Console.WriteLine($"Great choice, I hope that you enjoy your {mealTuple.Flavour} {mealTuple.Ingredient} {mealTuple.Dish}");
+Console.ForegroundColor = ConsoleColor.White;
+
+
+// Type Definitions
+enum Powder
+{
+    Spicy,
+    Salty,
+    Sweet
 };
 
-enum ChestState
+enum FoodType
 {
-    Open,
-    Closed,
-    Locked
+    Gumbo,
+    Soup,
+    Stew
+};
+
+enum MainIngredient
+{
+    Chicken,
+    Mushroom,
+    Carrot,
+    Potato
 };
